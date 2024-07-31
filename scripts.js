@@ -4,6 +4,16 @@ let currentDigits = 'one'; // Default to one digit
 let algebraAttributes = []; // Store the selected algebra attributes
 let arithmeticType; // Store the current arithmetic type
 
+// Function to handle Enter key for Submit button
+function handleEnterForSubmit(event) {
+    if (event.key === 'Enter') {
+        checkAnswer();
+    }
+}
+
+// Ensure the event listener for Enter key is always set to trigger the Submit button
+document.addEventListener('keydown', handleEnterForSubmit);
+
 function selectOperation(op) {
     operation = op;
     document.getElementById('problem-type-choice').style.display = 'none';
@@ -98,8 +108,7 @@ function generateAlgebraProblem(type) {
         correctAnswer = a * b;
         mathProblemElement.textContent = `${a} * ${b} = x`;
     } else if (type === 'division') {
-        // Ensure b is not zero and the division results in a whole number
-        if (b === 0) b = 1;
+        if (b === 0) b = 1; // Ensure b is not zero
         correctAnswer = a / b;
         mathProblemElement.innerHTML = `<div class="fraction"><span>${a}</span><span class="denominator">${b}</span></div> = x`;
     }
@@ -121,6 +130,8 @@ function beginAlgebraProblems() {
     if (algebraAttributes.length > 0) {
         generateCombinedAlgebraProblem();
     }
+    document.getElementById('algebra-choice').style.display = 'none';
+    document.getElementById('algebra-questions').style.display = 'block';
 }
 
 function generateCombinedAlgebraProblem() {
@@ -132,43 +143,37 @@ function generateCombinedAlgebraProblem() {
             types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
         }
     });
-    
+
     let problem = '';
-    let correct = 0;
-    let a = Math.floor(Math.random() * 10);
-    let b = Math.floor(Math.random() * 10);
-    let c = Math.floor(Math.random() * 10);
-    let operationsCount = Math.floor(Math.random() * 2) + 1; // Generate at most 2 operations
-
-    for (let i = 0; i < operationsCount; i++) {
-        let type = types[Math.floor(Math.random() * types.length)];
-
-        if (type === 'addition') {
-            problem += `${i > 0 ? ' + ' : ''}${a} + ${b}`;
-            correct = i === 0 ? a + b : correct + b;
-        } else if (type === 'subtraction') {
-            problem += `${i > 0 ? ' - ' : ''}${a} - ${b}`;
-            correct = i === 0 ? a - b : correct - b;
-        } else if (type === 'multiplication') {
-            problem += `${i > 0 ? ' * ' : ''}${a} * ${b}`;
-            correct = i === 0 ? a * b : correct * b;
-        } else if (type === 'division') {
-            if (b === 0) b = 1;
-            problem += `${i > 0 ? ' / ' : ''}<div class="fraction"><span>${a}</span><span class="denominator">${b}</span></div>`;
-            correct = i === 0 ? a / b : correct / b;
-        }
-
-        if (i < operationsCount - 1) {
-            a = c; // Use c for next operation if more than one type is selected
-            b = Math.floor(Math.random() * 10);
-            c = Math.floor(Math.random() * 10);
-        }
+    let numbers = [];
+    for (let i = 0; i <= types.length; i++) {
+        numbers.push(Math.floor(Math.random() * 10));
     }
-    
+
+    let result = numbers[0];
+    problem += `${numbers[0]}`;
+
+    types.forEach((type, index) => {
+        if (type === 'addition') {
+            problem += ` + ${numbers[index + 1]}`;
+            result += numbers[index + 1];
+        } else if (type === 'subtraction') {
+            problem += ` - ${numbers[index + 1]}`;
+            result -= numbers[index + 1];
+        } else if (type === 'multiplication') {
+            problem += ` * ${numbers[index + 1]}`;
+            result *= numbers[index + 1];
+        } else if (type === 'division') {
+            if (numbers[index + 1] === 0) numbers[index + 1] = 1; // Ensure num is not zero
+            problem += ` / ${numbers[index + 1]}`;
+            result /= numbers[index + 1];
+        }
+    });
+
     const mathProblemElement = document.getElementById('math-problem');
     mathProblemElement.innerHTML = `${problem} = x`;
-    correctAnswer = correct;
-    
+    correctAnswer = result;
+
     // Display the answer input box and submit button
     const answerBox = document.getElementById('answer-box');
     const submitButton = document.getElementById('submit-button');
@@ -195,7 +200,7 @@ function checkAnswer() {
     const userAnswer = parseFraction(answerBox.value.trim());
     const resultElement = document.getElementById('result');
     
-    if (userAnswer === correctAnswer) {
+    if (userAnswer === correctAnswer || Math.abs(userAnswer - correctAnswer) < 0.0001) {
         resultElement.textContent = 'Correct!';
         resultElement.style.color = 'green';
     } else {
@@ -231,11 +236,22 @@ function showDigitChoice() {
 function generateAnotherOne() {
     if (operation === 'algebra') {
         document.getElementById('result').textContent = ''; // Clear the result text
+        document.getElementById('answer-box').value = ''; // Clear the input box
+        document.getElementById('answer-box').disabled = false;
+        document.getElementById('submit-button').disabled = false;
+        document.getElementById('answer-box').focus(); // Automatically focus on the input box
         generateCombinedAlgebraProblem(); // Generate a combined algebra problem
     } else if (operation === 'arithmetic') {
         document.getElementById('result').textContent = ''; // Clear the result text
+        document.getElementById('answer-box').value = ''; // Clear the input box
+        document.getElementById('answer-box').disabled = false;
+        document.getElementById('submit-button').disabled = false;
+        document.getElementById('answer-box').focus(); // Automatically focus on the input box
         generateMathProblem(currentDigits); // Use the stored arithmetic type to generate a new problem
     }
+
+    // Hide the Another One button
+    document.getElementById('another-one-button').style.display = 'none';
 }
 
 function resetSelection() {
@@ -252,4 +268,9 @@ function navigateButtons(event) {
         currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
         buttons[currentIndex].focus();
     }
+}
+
+function changeAttributes() {
+    document.getElementById('algebra-questions').style.display = 'none';
+    document.getElementById('algebra-choice').style.display = 'flex';
 }
