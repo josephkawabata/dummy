@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose problem type</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="problem-type-choice">
+            <p>Choose a problem type:</p>
+            <button onclick="selectOperation('arithmetic')">Arithmetic</button>
+            <button onclick="selectOperation('algebra')">Algebra</button>
+        </div>
+        
+        <div id="arithmetic-choice" style="display: none;">
+            <p>Choose arithmetic problem type:</p>
+            <button onclick="chooseArithmeticType('addition')">Addition</button>
+            <button onclick="chooseArithmeticType('subtraction')">Subtraction</button>
+        </div>
+
+        <div id="digit-choice" style="display: none;">
+            <p id="digit-choice-header">Choose the number of digits:</p>
+            <button onclick="generateMathProblem('one')">One Digit</button>
+            <button onclick="generateMathProblem('two')">Two Digits</button>
+            <button onclick="generateMathProblem('three')">Three Digits</button>
+        </div>
+        
+        <div id="algebra-choice" style="display: none;">
+            <p>Select attributes:</p>
+            <label><input type="checkbox" id="addition-subtraction" value="addition/subtraction"> Addition/Subtraction</label>
+            <label><input type="checkbox" id="multiplication-division" value="multiplication/division"> Multiplication/Division</label>
+            <button onclick="beginAlgebraProblems()">Begin</button>
+        </div>
+
+        <p id="algebra-text" style="display: none;">Solve for x:</p>
+        <p id="math-problem"></p>
+        <input type="text" id="answer-box" placeholder="Enter your answer here" style="display: none;" onkeydown="if(event.key === 'Enter') checkAnswer();">
+        <button onclick="checkAnswer()" id="submit-button" style="display: none;">Submit</button>
+        <p id="result"></p>
+        
+        <button id="another-one-button" style="display: none;" onclick="generateAnotherOne()" onkeydown="navigateButtons(event)">Another One!</button>
+        <button id="new-problem-button" style="display: none;" onclick="resetSelection()" onkeydown="navigateButtons(event)">Back Home</button>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

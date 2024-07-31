@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+#answer-box {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 18px; /* Increase text size by 10% */
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+p {
+    font-size: 36px;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 36px;
+}
+
+#algebra-choice,
+#arithmetic-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fraction {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.fraction > span {
+    display: block;
+    padding: 0 0.5em;
+}
+
+.fraction > .denominator {
+    border-top: 1px solid #000;
+}
