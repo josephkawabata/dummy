@@ -2,7 +2,8 @@ body {
     font-family: Arial, sans-serif;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #2E2E2E; /* Dusty chalkboard background */
+    color: #ffffff; /* White text */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,6 +23,8 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 10px;
+    background-color: #ffffff; /* White background for input box */
+    color: #000000; /* Black text for input box */
 }
 
 button {
@@ -30,13 +33,13 @@ button {
     font-size: 18px; /* Increase text size by 10% */
     border: none;
     border-radius: 4px;
-    background-color: #007BFF;
+    background-color: #4CAF50; /* Chalkboard green background */
     color: white;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #45a049; /* Darker green for hover */
 }
 
 p {
@@ -59,6 +62,7 @@ p {
     display: inline-block;
     text-align: center;
     vertical-align: middle;
+    color: #ffffff; /* White text for the fraction */
 }
 
 .fraction > span {
@@ -67,5 +71,5 @@ p {
 }
 
 .fraction > .denominator {
-    border-top: 1px solid #000;
+    border-top: 1px solid #ffffff; /* White line for the fraction */
 }
