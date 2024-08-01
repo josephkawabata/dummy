@@ -92,7 +92,7 @@ function generateAlgebraProblem(type) {
     document.getElementById('algebra-text').style.display = 'block';
     document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
 
-    let problem, leftSide, rightSide;
+    let problem, leftSide, rightSide, correctExpression;
     if (!type || type === 'addition/subtraction') {
         type = Math.random() < 0.5 ? 'addition' : 'subtraction';
     } else if (type === 'multiplication/division') {
@@ -114,16 +114,27 @@ function generateAlgebraProblem(type) {
         problem = `${a} / ${b}`;
     }
 
-    const xPosition = Math.random() < 0.5;
-    if (xPosition) {
+    const xPosition = Math.floor(Math.random() * 3);
+    if (xPosition === 0) {
         leftSide = 'x';
         rightSide = problem;
+        correctExpression = correctAnswer;
+    } else if (xPosition === 1) {
+        leftSide = `${problem} = x`;
+        rightSide = '';
+        correctExpression = correctAnswer;
     } else {
-        leftSide = problem;
-        rightSide = 'x';
+        const parts = problem.split(' ');
+        if (parts.length === 3) {
+            leftSide = `${parts[0]} ${parts[1]} x = ${parts[2]}`;
+            correctExpression = eval(`${a} ${parts[1]} x`);
+        } else {
+            leftSide = `${parts[0]} ${parts[1]} x = ${parts[2]} ${parts[3]} ${parts[4]}`;
+            correctExpression = eval(`${a} ${parts[1]} x ${parts[3]} ${b}`);
+        }
     }
 
-    mathProblemElement.innerHTML = `${leftSide} = ${rightSide}`;
+    mathProblemElement.innerHTML = leftSide;
 
     // Hide the increase/decrease digits button for algebra problems
     document.getElementById('choose-digits-button').style.display = 'none';
@@ -172,17 +183,28 @@ function generateCombinedAlgebraProblem() {
         }
     });
 
-    const xPosition = Math.random() < 0.5;
-    let mathProblem;
-    if (xPosition) {
+    const xPosition = Math.floor(Math.random() * 3);
+    let mathProblem, correctExpression;
+    if (xPosition === 0) {
         mathProblem = `x = ${expression}`;
-    } else {
+        correctExpression = eval(expression);
+    } else if (xPosition === 1) {
         mathProblem = `${expression} = x`;
+        correctExpression = eval(expression);
+    } else {
+        const parts = expression.split(' ');
+        if (parts.length === 3) {
+            mathProblem = `${parts[0]} ${parts[1]} x = ${parts[2]}`;
+            correctExpression = eval(`${numbers[0]} ${parts[1]} x`);
+        } else {
+            mathProblem = `${parts[0]} ${parts[1]} x = ${parts[2]} ${parts[3]} ${parts[4]}`;
+            correctExpression = eval(`${numbers[0]} ${parts[1]} x ${parts[3]} ${numbers[1]}`);
+        }
     }
 
     const mathProblemElement = document.getElementById('math-problem');
     mathProblemElement.innerHTML = mathProblem;
-    correctAnswer = eval(expression); // Use eval to evaluate the expression
+    correctAnswer = correctExpression; // Set the correct answer
 
     const answerBox = document.getElementById('answer-box');
     const submitButton = document.getElementById('submit-button');
@@ -193,7 +215,6 @@ function generateCombinedAlgebraProblem() {
     answerBox.value = ''; // Clear the input box
     answerBox.focus();
 }
-
 
 function generateNumber(digits) {
     if (digits === 'one') {
