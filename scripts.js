@@ -71,103 +71,32 @@ function generateMathProblem(digits) {
     document.getElementById('digit-choice').style.display = 'none';
 }
 
-function generateAlgebraProblem(type) {
-    algebraAttributes.push(type); // Add the current algebra type to the selected attributes
-    let a = Math.floor(Math.random() * 10);
-    let b = Math.floor(Math.random() * 10);
-    const mathProblemElement = document.getElementById('math-problem');
-    const answerBox = document.getElementById('answer-box');
-    const resultElement = document.getElementById('result');
-    const submitButton = document.getElementById('submit-button');
-
-    // Clear previous problem and result
-    answerBox.value = '';
-    resultElement.textContent = '';
-    answerBox.style.display = 'block';
-    submitButton.style.display = 'block';
-    answerBox.disabled = false;
-    submitButton.disabled = false;
-    answerBox.focus(); // Automatically focus on the input box
-
-    document.getElementById('algebra-text').style.display = 'block';
-    document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
-
-    let problem, leftSide, rightSide, correctExpression;
-    if (!type || type === 'addition/subtraction') {
-        type = Math.random() < 0.5 ? 'addition' : 'subtraction';
-    } else if (type === 'multiplication/division') {
-        type = Math.random() < 0.5 ? 'multiplication' : 'division';
-    }
-
-    if (type === 'addition') {
-        correctAnswer = a + b;
-        problem = `${a} + ${b}`;
-    } else if (type === 'subtraction') {
-        correctAnswer = a - b;
-        problem = `${a} - ${b}`;
-    } else if (type === 'multiplication') {
-        correctAnswer = a * b;
-        problem = `${a} * ${b}`;
-    } else if (type === 'division') {
-        if (b === 0) b = 1; // Ensure b is not zero
-        correctAnswer = a / b;
-        problem = `${a} / ${b}`;
-    }
-
-    const xPosition = Math.floor(Math.random() * 3);
-    if (xPosition === 0) {
-        leftSide = 'x';
-        rightSide = problem;
-        correctExpression = correctAnswer;
-    } else if (xPosition === 1) {
-        leftSide = `${problem} = x`;
-        rightSide = '';
-        correctExpression = correctAnswer;
-    } else {
-        const parts = problem.split(' ');
-        if (parts.length === 3) {
-            leftSide = `${parts[0]} ${parts[1]} x = ${parts[2]}`;
-            correctExpression = eval(`${a} ${parts[1]} x`);
-        } else {
-            leftSide = `${parts[0]} ${parts[1]} x = ${parts[2]} ${parts[3]} ${parts[4]}`;
-            correctExpression = eval(`${a} ${parts[1]} x ${parts[3]} ${b}`);
-        }
-    }
-
-    mathProblemElement.innerHTML = leftSide;
-
-    // Hide the increase/decrease digits button for algebra problems
-    document.getElementById('choose-digits-button').style.display = 'none';
-    document.getElementById('new-problem-button').style.display = 'block';
-    document.getElementById('another-one-button').style.display = 'none';
-}
-
-function beginAlgebraProblems() {
-    algebraAttributes = []; // Reset the selected attributes
-    if (document.getElementById('addition-subtraction').checked) {
-        algebraAttributes.push('addition/subtraction');
-    }
-    if (document.getElementById('multiplication-division').checked) {
-        algebraAttributes.push('multiplication/division');
-    }
-    if (algebraAttributes.length > 0) {
-        generateCombinedAlgebraProblem();
-    }
-}
-
-function generateCombinedAlgebraProblem() {
+function generateAlgebraProblem(type = null, isCombined = false) {
     let types = [];
-    algebraAttributes.forEach(attr => {
-        if (attr === 'addition/subtraction') {
+    let numbers = [];
+
+    if (isCombined) {
+        algebraAttributes.forEach(attr => {
+            if (attr === 'addition/subtraction') {
+                types.push(Math.random() < 0.5 ? 'addition' : 'subtraction');
+            } else if (attr === 'multiplication/division') {
+                types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
+            }
+        });
+
+        for (let i = 0; i <= types.length; i++) {
+            numbers.push(Math.floor(Math.random() * 10));
+        }
+    } else {
+        algebraAttributes.push(type); // Add the current algebra type to the selected attributes
+        numbers.push(Math.floor(Math.random() * 10));
+        numbers.push(Math.floor(Math.random() * 10));
+
+        if (!type || type === 'addition/subtraction') {
             types.push(Math.random() < 0.5 ? 'addition' : 'subtraction');
-        } else if (attr === 'multiplication/division') {
+        } else if (type === 'multiplication/division') {
             types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
         }
-    });
-
-    let numbers = [];
-    for (let i = 0; i <= types.length; i++) {
-        numbers.push(Math.floor(Math.random() * 10));
     }
 
     let expression = numbers[0].toString();
@@ -214,6 +143,24 @@ function generateCombinedAlgebraProblem() {
     submitButton.disabled = false;
     answerBox.value = ''; // Clear the input box
     answerBox.focus();
+
+    // Hide the increase/decrease digits button for algebra problems
+    document.getElementById('choose-digits-button').style.display = 'none';
+    document.getElementById('new-problem-button').style.display = 'block';
+    document.getElementById('another-one-button').style.display = 'none';
+}
+
+function beginAlgebraProblems() {
+    algebraAttributes = []; // Reset the selected attributes
+    if (document.getElementById('addition-subtraction').checked) {
+        algebraAttributes.push('addition/subtraction');
+    }
+    if (document.getElementById('multiplication-division').checked) {
+        algebraAttributes.push('multiplication/division');
+    }
+    if (algebraAttributes.length > 0) {
+        generateAlgebraProblem(null, true);
+    }
 }
 
 function generateNumber(digits) {
