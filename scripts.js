@@ -92,13 +92,13 @@ function generateAlgebraProblem(type) {
     document.getElementById('algebra-text').style.display = 'block';
     document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
 
+    let problem, leftSide, rightSide;
     if (!type || type === 'addition/subtraction') {
         type = Math.random() < 0.5 ? 'addition' : 'subtraction';
     } else if (type === 'multiplication/division') {
         type = Math.random() < 0.5 ? 'multiplication' : 'division';
     }
 
-    let problem, leftSide, rightSide;
     if (type === 'addition') {
         correctAnswer = a + b;
         problem = `${a} + ${b}`;
@@ -111,11 +111,11 @@ function generateAlgebraProblem(type) {
     } else if (type === 'division') {
         if (b === 0) b = 1; // Ensure b is not zero
         correctAnswer = a / b;
-        problem = `<div class="fraction"><span>${a}</span><span class="denominator">${b}</span></div>`;
+        problem = `${a} / ${b}`;
     }
 
-    const xPosition = Math.floor(Math.random() * 2);
-    if (xPosition === 0) {
+    const xPosition = Math.random() < 0.5;
+    if (xPosition) {
         leftSide = 'x';
         rightSide = problem;
     } else {
@@ -154,7 +154,6 @@ function generateCombinedAlgebraProblem() {
         }
     });
 
-    let problem = '';
     let numbers = [];
     for (let i = 0; i <= types.length; i++) {
         numbers.push(Math.floor(Math.random() * 10));
@@ -173,15 +172,12 @@ function generateCombinedAlgebraProblem() {
         }
     });
 
-    const xPosition = Math.floor(Math.random() * (types.length + 1));
-    const leftSide = expression.split(' ').slice(0, xPosition * 2 + 1).join(' ');
-    const rightSide = expression.split(' ').slice(xPosition * 2 + 1).join(' ');
-
+    const xPosition = Math.random() < 0.5;
     let mathProblem;
-    if (Math.random() < 0.5) {
-        mathProblem = `${leftSide} = x ${rightSide ? rightSide : ''}`;
+    if (xPosition) {
+        mathProblem = `x = ${expression}`;
     } else {
-        mathProblem = `${rightSide ? rightSide : ''} x = ${leftSide}`;
+        mathProblem = `${expression} = x`;
     }
 
     const mathProblemElement = document.getElementById('math-problem');
