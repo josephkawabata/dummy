@@ -58,12 +58,6 @@ p {
     align-items: center;
 }
 
-#algebra-questions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .fraction {
     display: inline-block;
     text-align: center;
