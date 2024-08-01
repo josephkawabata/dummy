@@ -99,36 +99,22 @@ function generateAlgebraProblem(type = null, isCombined = false) {
         }
     }
 
-    let expression = numbers[0].toString();
-    types.forEach((type, index) => {
-        if (type === 'addition') {
-            expression += ` + ${numbers[index + 1]}`;
-        } else if (type === 'subtraction') {
-            expression += ` - ${numbers[index + 1]}`;
-        } else if (type === 'multiplication') {
-            expression += ` * ${numbers[index + 1]}`;
-        } else if (type === 'division') {
-            expression += ` / ${numbers[index + 1]}`;
-        }
-    });
-
-    const xPosition = Math.floor(Math.random() * 3);
+    let expression = `${numbers[0]} ${getOperator(types[0])} ${numbers[1]}`;
+    let result = eval(expression);
+    
     let mathProblem, correctExpression;
-    if (xPosition === 0) {
+    const problemType = Math.floor(Math.random() * 3);
+
+    if (problemType === 0) {
         mathProblem = `x = ${expression}`;
-        correctExpression = eval(expression);
-    } else if (xPosition === 1) {
+        correctExpression = result;
+    } else if (problemType === 1) {
         mathProblem = `${expression} = x`;
-        correctExpression = eval(expression);
-    } else {
+        correctExpression = result;
+    } else if (problemType === 2) {
         const parts = expression.split(' ');
-        if (parts.length === 3) {
-            mathProblem = `${parts[0]} ${parts[1]} x = ${parts[2]}`;
-            correctExpression = eval(`${numbers[0]} ${parts[1]} x`);
-        } else {
-            mathProblem = `${parts[0]} ${parts[1]} x = ${parts[2]} ${parts[3]} ${parts[4]}`;
-            correctExpression = eval(`${numbers[0]} ${parts[1]} x ${parts[3]} ${numbers[1]}`);
-        }
+        mathProblem = `${parts[0]} ${parts[1]} x = ${parts[2]}`;
+        correctExpression = eval(`${numbers[0]} ${parts[1]} x`);
     }
 
     const mathProblemElement = document.getElementById('math-problem');
@@ -148,6 +134,13 @@ function generateAlgebraProblem(type = null, isCombined = false) {
     document.getElementById('choose-digits-button').style.display = 'none';
     document.getElementById('new-problem-button').style.display = 'block';
     document.getElementById('another-one-button').style.display = 'none';
+}
+
+function getOperator(type) {
+    if (type === 'addition') return '+';
+    if (type === 'subtraction') return '-';
+    if (type === 'multiplication') return '*';
+    if (type === 'division') return '/';
 }
 
 function beginAlgebraProblems() {
