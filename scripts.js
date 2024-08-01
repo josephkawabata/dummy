@@ -271,6 +271,7 @@ function navigateButtons(event) {
 }
 
 function changeAttributes() {
+    document.getElementById('result').textContent = ''; // Clear the result text
     document.getElementById('algebra-questions').style.display = 'none';
     document.getElementById('algebra-choice').style.display = 'flex';
 }
