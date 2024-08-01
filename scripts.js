@@ -79,7 +79,7 @@ function generateAlgebraProblem(type) {
     const answerBox = document.getElementById('answer-box');
     const resultElement = document.getElementById('result');
     const submitButton = document.getElementById('submit-button');
-    
+
     // Clear previous problem and result
     answerBox.value = '';
     resultElement.textContent = '';
@@ -88,7 +88,7 @@ function generateAlgebraProblem(type) {
     answerBox.disabled = false;
     submitButton.disabled = false;
     answerBox.focus(); // Automatically focus on the input box
-    
+
     document.getElementById('algebra-text').style.display = 'block';
     document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
 
@@ -98,21 +98,33 @@ function generateAlgebraProblem(type) {
         type = Math.random() < 0.5 ? 'multiplication' : 'division';
     }
 
+    let problem, leftSide, rightSide;
     if (type === 'addition') {
         correctAnswer = a + b;
-        mathProblemElement.textContent = `${a} + ${b} = x`;
+        problem = `${a} + ${b}`;
     } else if (type === 'subtraction') {
         correctAnswer = a - b;
-        mathProblemElement.textContent = `${a} - ${b} = x`;
+        problem = `${a} - ${b}`;
     } else if (type === 'multiplication') {
         correctAnswer = a * b;
-        mathProblemElement.textContent = `${a} * ${b} = x`;
+        problem = `${a} * ${b}`;
     } else if (type === 'division') {
         if (b === 0) b = 1; // Ensure b is not zero
         correctAnswer = a / b;
-        mathProblemElement.innerHTML = `<div class="fraction"><span>${a}</span><span class="denominator">${b}</span></div> = x`;
+        problem = `<div class="fraction"><span>${a}</span><span class="denominator">${b}</span></div>`;
     }
-    
+
+    const xPosition = Math.floor(Math.random() * 2);
+    if (xPosition === 0) {
+        leftSide = 'x';
+        rightSide = problem;
+    } else {
+        leftSide = problem;
+        rightSide = 'x';
+    }
+
+    mathProblemElement.innerHTML = `${leftSide} = ${rightSide}`;
+
     // Hide the increase/decrease digits button for algebra problems
     document.getElementById('choose-digits-button').style.display = 'none';
     document.getElementById('new-problem-button').style.display = 'block';
@@ -148,7 +160,6 @@ function generateCombinedAlgebraProblem() {
         numbers.push(Math.floor(Math.random() * 10));
     }
 
-    // Construct the problem string correctly according to order of operations
     let expression = numbers[0].toString();
     types.forEach((type, index) => {
         if (type === 'addition') {
@@ -162,11 +173,21 @@ function generateCombinedAlgebraProblem() {
         }
     });
 
+    const xPosition = Math.floor(Math.random() * (types.length + 1));
+    const leftSide = expression.split(' ').slice(0, xPosition * 2 + 1).join(' ');
+    const rightSide = expression.split(' ').slice(xPosition * 2 + 1).join(' ');
+
+    let mathProblem;
+    if (Math.random() < 0.5) {
+        mathProblem = `${leftSide} = x ${rightSide ? rightSide : ''}`;
+    } else {
+        mathProblem = `${rightSide ? rightSide : ''} x = ${leftSide}`;
+    }
+
     const mathProblemElement = document.getElementById('math-problem');
-    mathProblemElement.innerHTML = `${expression} = x`;
+    mathProblemElement.innerHTML = mathProblem;
     correctAnswer = eval(expression); // Use eval to evaluate the expression
 
-    // Display the answer input box and submit button
     const answerBox = document.getElementById('answer-box');
     const submitButton = document.getElementById('submit-button');
     answerBox.style.display = 'block';
