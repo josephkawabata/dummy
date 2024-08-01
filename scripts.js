@@ -212,25 +212,22 @@ function showDigitChoice() {
 }
 
 function generateAnotherOne() {
+    document.getElementById('result').textContent = ''; // Clear the result text
+    document.getElementById('answer-box').value = ''; // Clear the input box
+    document.getElementById('answer-box').disabled = false;
+    document.getElementById('submit-button').disabled = false;
+    document.getElementById('answer-box').focus(); // Automatically focus on the input box
+
     if (operation === 'algebra') {
-        document.getElementById('result').textContent = ''; // Clear the result text
-        document.getElementById('answer-box').value = ''; // Clear the input box
-        document.getElementById('answer-box').disabled = false;
-        document.getElementById('submit-button').disabled = false;
-        document.getElementById('answer-box').focus(); // Automatically focus on the input box
-        generateCombinedAlgebraProblem(); // Generate a combined algebra problem
+        generateAlgebraProblem(null, algebraAttributes.length > 1);
     } else if (operation === 'arithmetic') {
-        document.getElementById('result').textContent = ''; // Clear the result text
-        document.getElementById('answer-box').value = ''; // Clear the input box
-        document.getElementById('answer-box').disabled = false;
-        document.getElementById('submit-button').disabled = false;
-        document.getElementById('answer-box').focus(); // Automatically focus on the input box
         generateMathProblem(currentDigits); // Use the stored arithmetic type to generate a new problem
     }
 
     // Hide the Another One button
     document.getElementById('another-one-button').style.display = 'none';
 }
+
 
 function resetSelection() {
     location.reload(); // Reload the page to reset everything
