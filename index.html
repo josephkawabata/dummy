@@ -34,17 +34,14 @@
             <button onclick="beginAlgebraProblems()">Begin</button>
         </div>
 
-        <div id="algebra-questions" style="display: none;">
-            <p id="algebra-text">Solve for x:</p>
-            <p id="math-problem"></p>
-            <input type="text" id="answer-box" placeholder="Enter your answer here" onkeydown="if(event.key === 'Enter') checkAnswer();">
-            <button onclick="checkAnswer()" id="submit-button">Submit</button>
-            <p id="result"></p>
-            <button id="another-one-button" style="display: none;" onclick="generateAnotherOne()">Another One!</button>
-            <button id="change-attributes-button" onclick="changeAttributes()">Change attributes</button>
-        </div>
+        <p id="algebra-text" style="display: none;">Solve for x:</p>
+        <p id="math-problem"></p>
+        <input type="text" id="answer-box" placeholder="Enter your answer here" style="display: none;" onkeydown="if(event.key === 'Enter') checkAnswer();">
+        <button onclick="checkAnswer()" id="submit-button" style="display: none;">Submit</button>
+        <p id="result"></p>
         
-        <button id="new-problem-button" style="display: none;" onclick="resetSelection()">Back Home</button>
+        <button id="another-one-button" style="display: none;" onclick="generateAnotherOne()" onkeydown="navigateButtons(event)">Another One!</button>
+        <button id="new-problem-button" style="display: none;" onclick="resetSelection()" onkeydown="navigateButtons(event)">Back Home</button>
     </div>
     <script src="scripts.js"></script>
 </body>
