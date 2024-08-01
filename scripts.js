@@ -130,8 +130,6 @@ function beginAlgebraProblems() {
     if (algebraAttributes.length > 0) {
         generateCombinedAlgebraProblem();
     }
-    document.getElementById('algebra-choice').style.display = 'none';
-    document.getElementById('algebra-questions').style.display = 'block';
 }
 
 function generateCombinedAlgebraProblem() {
@@ -150,29 +148,23 @@ function generateCombinedAlgebraProblem() {
         numbers.push(Math.floor(Math.random() * 10));
     }
 
-    let result = numbers[0];
-    problem += `${numbers[0]}`;
-
+    // Construct the problem string correctly according to order of operations
+    let expression = numbers[0].toString();
     types.forEach((type, index) => {
         if (type === 'addition') {
-            problem += ` + ${numbers[index + 1]}`;
-            result += numbers[index + 1];
+            expression += ` + ${numbers[index + 1]}`;
         } else if (type === 'subtraction') {
-            problem += ` - ${numbers[index + 1]}`;
-            result -= numbers[index + 1];
+            expression += ` - ${numbers[index + 1]}`;
         } else if (type === 'multiplication') {
-            problem += ` * ${numbers[index + 1]}`;
-            result *= numbers[index + 1];
+            expression += ` * ${numbers[index + 1]}`;
         } else if (type === 'division') {
-            if (numbers[index + 1] === 0) numbers[index + 1] = 1; // Ensure num is not zero
-            problem += ` / ${numbers[index + 1]}`;
-            result /= numbers[index + 1];
+            expression += ` / ${numbers[index + 1]}`;
         }
     });
 
     const mathProblemElement = document.getElementById('math-problem');
-    mathProblemElement.innerHTML = `${problem} = x`;
-    correctAnswer = result;
+    mathProblemElement.innerHTML = `${expression} = x`;
+    correctAnswer = eval(expression); // Use eval to evaluate the expression
 
     // Display the answer input box and submit button
     const answerBox = document.getElementById('answer-box');
@@ -184,6 +176,7 @@ function generateCombinedAlgebraProblem() {
     answerBox.value = ''; // Clear the input box
     answerBox.focus();
 }
+
 
 function generateNumber(digits) {
     if (digits === 'one') {
@@ -268,10 +261,4 @@ function navigateButtons(event) {
         currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
         buttons[currentIndex].focus();
     }
-}
-
-function changeAttributes() {
-    document.getElementById('result').textContent = ''; // Clear the result text
-    document.getElementById('algebra-questions').style.display = 'none';
-    document.getElementById('algebra-choice').style.display = 'flex';
 }
