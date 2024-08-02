@@ -71,63 +71,67 @@ function generateMathProblem(digits) {
     document.getElementById('digit-choice').style.display = 'none';
 }
 
-function generateAlgebraProblem() {
-    let type = algebraAttributes[0]; // We're only handling one type at a time
-    let a = Math.floor(Math.random() * 10);
-    let b = Math.floor(Math.random() * 10);
-    const mathProblemElement = document.getElementById('math-problem');
-    const answerBox = document.getElementById('answer-box');
-    const resultElement = document.getElementById('result');
-    const submitButton = document.getElementById('submit-button');
+function generateAlgebraProblem(type = null, isCombined = false) {
+    let types = [];
+    let numbers = [];
     
-    // Clear previous problem and result
-    answerBox.value = '';
-    resultElement.textContent = '';
+    if (isCombined) {
+        algebraAttributes.forEach(attr => {
+            if (attr === 'addition/subtraction') {
+                types.push(Math.random() < 0.5 ? 'addition' : 'subtraction');
+            } else if (attr === 'multiplication/division') {
+                types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
+            }
+        });
+
+        for (let i = 0; i <= types.length; i++) {
+            numbers.push(Math.floor(Math.random() * 10));
+        }
+    } else {
+        if (type) {
+            algebraAttributes.push(type);
+        }
+        numbers.push(Math.floor(Math.random() * 10));
+        numbers.push(Math.floor(Math.random() * 10));
+
+        if (!type || type === 'addition/subtraction') {
+            types.push(Math.random() < 0.5 ? 'addition' : 'subtraction');
+        } else if (type === 'multiplication/division') {
+            types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
+        }
+    }
+
+    let expression = `${numbers[0]} ${getOperator(types[0])} ${numbers[1]}`;
+    let result = eval(expression);
+    let correctExpression;
+    const problemType = Math.floor(Math.random() * 4);
+    
+    if (problemType === 0) {
+        mathProblem = `x = ${expression}`;
+        correctExpression = result;
+    } else if (problemType === 1) {
+        mathProblem = `${expression} = x`;
+        correctExpression = result;
+    } else if (problemType === 2) {
+        mathProblem = `${numbers[0]} ${getOperator(types[0])} x = ${numbers[1]}`;
+        correctExpression = (types[0] === 'addition') ? (numbers[1] - numbers[0]) : (types[0] === 'subtraction') ? (numbers[0] - numbers[1]) : (types[0] === 'multiplication') ? (numbers[1] / numbers[0]) : (numbers[0] * numbers[1]);
+    } else if (problemType === 3) {
+        mathProblem = `x ${getOperator(types[0])} ${numbers[0]} = ${numbers[1]}`;
+        correctExpression = (types[0] === 'addition') ? (numbers[1] - numbers[0]) : (types[0] === 'subtraction') ? (numbers[1] + numbers[0]) : (types[0] === 'multiplication') ? (numbers[1] / numbers[0]) : (numbers[1] * numbers[0]);
+    }
+
+    const mathProblemElement = document.getElementById('math-problem');
+    mathProblemElement.innerHTML = mathProblem;
+    correctAnswer = correctExpression; // Set the correct answer
+
+    const answerBox = document.getElementById('answer-box');
+    const submitButton = document.getElementById('submit-button');
     answerBox.style.display = 'block';
     submitButton.style.display = 'block';
     answerBox.disabled = false;
     submitButton.disabled = false;
-    answerBox.focus(); // Automatically focus on the input box
-    
-    document.getElementById('algebra-text').style.display = 'block';
-    document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
-
-    let operator = (type === 'addition/subtraction') ? (Math.random() < 0.5 ? '+' : '-') : (Math.random() < 0.5 ? '*' : '/');
-    let expression, result;
-
-    if (operator === '+') {
-        result = a + b;
-        expression = `${a} + ${b}`;
-    } else if (operator === '-') {
-        result = a - b;
-        expression = `${a} - ${b}`;
-    } else if (operator === '*') {
-        result = a * b;
-        expression = `${a} * ${b}`;
-    } else {
-        if (b === 0) b = 1; // Ensure b is not zero
-        result = a / b;
-        expression = `${a} / ${b}`;
-    }
-
-    const problemType = Math.floor(Math.random() * 4);
-    let mathProblem;
-
-    if (problemType === 0) {
-        mathProblem = `x = ${expression}`;
-        correctAnswer = result;
-    } else if (problemType === 1) {
-        mathProblem = `${expression} = x`;
-        correctAnswer = result;
-    } else if (problemType === 2) {
-        mathProblem = `${a} ${operator} x = ${b}`;
-        correctAnswer = (operator === '+') ? (b - a) : (operator === '-') ? (a - b) : (operator === '*') ? (b / a) : (a * b);
-    } else if (problemType === 3) {
-        mathProblem = `x ${operator} ${a} = ${b}`;
-        correctAnswer = (operator === '+') ? (b - a) : (operator === '-') ? (b + a) : (operator === '*') ? (b / a) : (b * a);
-    }
-
-    mathProblemElement.innerHTML = mathProblem;
+    answerBox.value = ''; // Clear the input box
+    answerBox.focus();
 
     // Hide the increase/decrease digits button for algebra problems
     document.getElementById('choose-digits-button').style.display = 'none';
