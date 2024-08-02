@@ -72,7 +72,7 @@ function generateMathProblem(digits) {
 }
 
 function generateAlgebraProblem() {
-    let type = algebraAttributes[0]; // We're only handling addition/subtraction for now
+    let type = algebraAttributes[0]; // We're only handling one type at a time
     let a = Math.floor(Math.random() * 10);
     let b = Math.floor(Math.random() * 10);
     const mathProblemElement = document.getElementById('math-problem');
@@ -92,18 +92,25 @@ function generateAlgebraProblem() {
     document.getElementById('algebra-text').style.display = 'block';
     document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
 
-    let operator = type === 'addition/subtraction' ? (Math.random() < 0.5 ? '+' : '-') : '+';
+    let operator = (type === 'addition/subtraction') ? (Math.random() < 0.5 ? '+' : '-') : (Math.random() < 0.5 ? '*' : '/');
     let expression, result;
 
     if (operator === '+') {
         result = a + b;
         expression = `${a} + ${b}`;
-    } else {
+    } else if (operator === '-') {
         result = a - b;
         expression = `${a} - ${b}`;
+    } else if (operator === '*') {
+        result = a * b;
+        expression = `${a} * ${b}`;
+    } else {
+        if (b === 0) b = 1; // Ensure b is not zero
+        result = a / b;
+        expression = `${a} / ${b}`;
     }
 
-    const problemType = Math.floor(Math.random() * 3);
+    const problemType = Math.floor(Math.random() * 4);
     let mathProblem;
 
     if (problemType === 0) {
@@ -112,13 +119,12 @@ function generateAlgebraProblem() {
     } else if (problemType === 1) {
         mathProblem = `${expression} = x`;
         correctAnswer = result;
-    } else {
+    } else if (problemType === 2) {
         mathProblem = `${a} ${operator} x = ${b}`;
-        if (operator === '+') {
-            correctAnswer = b - a;
-        } else {
-            correctAnswer = b + a;
-        }
+        correctAnswer = (operator === '+') ? (b - a) : (operator === '-') ? (a - b) : (operator === '*') ? (b / a) : (a * b);
+    } else if (problemType === 3) {
+        mathProblem = `x ${operator} ${a} = ${b}`;
+        correctAnswer = (operator === '+') ? (b - a) : (operator === '-') ? (b + a) : (operator === '*') ? (b / a) : (b * a);
     }
 
     mathProblemElement.innerHTML = mathProblem;
@@ -154,7 +160,7 @@ function generateNumber(digits) {
 
 function checkAnswer() {
     const answerBox = document.getElementById('answer-box');
-    const userAnswer = parseFraction(answerBox.value.trim());
+    const userAnswer = parseFloat(answerBox.value.trim());
     const resultElement = document.getElementById('result');
     
     if (userAnswer === correctAnswer || Math.abs(userAnswer - correctAnswer) < 0.0001) {
@@ -175,14 +181,6 @@ function checkAnswer() {
     if (operation === 'arithmetic') {
         document.getElementById('choose-digits-button').style.display = 'block';
     }
-}
-
-function parseFraction(fraction) {
-    if (fraction.includes('/')) {
-        const [numerator, denominator] = fraction.split('/');
-        return parseFloat(numerator) / parseFloat(denominator);
-    }
-    return parseFloat(fraction);
 }
 
 function showDigitChoice() {
