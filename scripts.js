@@ -71,55 +71,57 @@ function generateMathProblem(digits) {
     document.getElementById('digit-choice').style.display = 'none';
 }
 
-function generateAlgebraProblem(type = 'addition/subtraction', isCombined = false) {
-    let numbers = [];
-    let expression;
-    let result;
-    let correctExpression;
-    let mathProblem;
-
-    // Generate two random numbers
-    numbers.push(Math.floor(Math.random() * 10));
-    numbers.push(Math.floor(Math.random() * 10));
-
-    // Determine if it's addition or subtraction
-    let operator = Math.random() < 0.5 ? '+' : '-';
-
-    // Create the expression based on the type of operation
-    if (operator === '+') {
-        expression = `${numbers[0]} + ${numbers[1]}`;
-        result = numbers[0] + numbers[1];
-    } else {
-        expression = `${numbers[0]} - ${numbers[1]}`;
-        result = numbers[0] - numbers[1];
-    }
-
-    // Randomly choose the form of the question
-    const problemType = Math.floor(Math.random() * 3);
-    if (problemType === 0) {
-        mathProblem = `x = ${expression}`;
-        correctExpression = result;
-    } else if (problemType === 1) {
-        mathProblem = `${expression} = x`;
-        correctExpression = result;
-    } else if (problemType === 2) {
-        const parts = expression.split(' ');
-        mathProblem = `${parts[0]} ${parts[1]} x = ${parts[2]}`;
-        correctExpression = eval(`${numbers[0]} ${parts[1]} x`);
-    }
-
+function generateAlgebraProblem() {
+    let type = algebraAttributes[0]; // We're only handling addition/subtraction for now
+    let a = Math.floor(Math.random() * 10);
+    let b = Math.floor(Math.random() * 10);
     const mathProblemElement = document.getElementById('math-problem');
-    mathProblemElement.innerHTML = mathProblem;
-    correctAnswer = correctExpression; // Set the correct answer
-
     const answerBox = document.getElementById('answer-box');
+    const resultElement = document.getElementById('result');
     const submitButton = document.getElementById('submit-button');
+    
+    // Clear previous problem and result
+    answerBox.value = '';
+    resultElement.textContent = '';
     answerBox.style.display = 'block';
     submitButton.style.display = 'block';
     answerBox.disabled = false;
     submitButton.disabled = false;
-    answerBox.value = ''; // Clear the input box
-    answerBox.focus();
+    answerBox.focus(); // Automatically focus on the input box
+    
+    document.getElementById('algebra-text').style.display = 'block';
+    document.getElementById('algebra-choice').style.display = 'none'; // Hide algebra choices
+
+    let operator = type === 'addition/subtraction' ? (Math.random() < 0.5 ? '+' : '-') : '+';
+    let expression, result;
+
+    if (operator === '+') {
+        result = a + b;
+        expression = `${a} + ${b}`;
+    } else {
+        result = a - b;
+        expression = `${a} - ${b}`;
+    }
+
+    const problemType = Math.floor(Math.random() * 3);
+    let mathProblem;
+
+    if (problemType === 0) {
+        mathProblem = `x = ${expression}`;
+        correctAnswer = result;
+    } else if (problemType === 1) {
+        mathProblem = `${expression} = x`;
+        correctAnswer = result;
+    } else {
+        mathProblem = `${a} ${operator} x = ${b}`;
+        if (operator === '+') {
+            correctAnswer = b - a;
+        } else {
+            correctAnswer = b + a;
+        }
+    }
+
+    mathProblemElement.innerHTML = mathProblem;
 
     // Hide the increase/decrease digits button for algebra problems
     document.getElementById('choose-digits-button').style.display = 'none';
@@ -136,10 +138,9 @@ function beginAlgebraProblems() {
         algebraAttributes.push('multiplication/division');
     }
     if (algebraAttributes.length > 0) {
-        generateAlgebraProblem('addition/subtraction', algebraAttributes.length > 1);
+        generateAlgebraProblem();
     }
 }
-
 
 function generateNumber(digits) {
     if (digits === 'one') {
@@ -197,7 +198,7 @@ function generateAnotherOne() {
     document.getElementById('answer-box').focus(); // Automatically focus on the input box
 
     if (operation === 'algebra') {
-        generateAlgebraProblem(null, algebraAttributes.length > 1);
+        generateAlgebraProblem();
     } else if (operation === 'arithmetic') {
         generateMathProblem(currentDigits); // Use the stored arithmetic type to generate a new problem
     }
@@ -205,7 +206,6 @@ function generateAnotherOne() {
     // Hide the Another One button
     document.getElementById('another-one-button').style.display = 'none';
 }
-
 
 function resetSelection() {
     location.reload(); // Reload the page to reset everything
