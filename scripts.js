@@ -71,40 +71,31 @@ function generateMathProblem(digits) {
     document.getElementById('digit-choice').style.display = 'none';
 }
 
-function generateAlgebraProblem(type = null, isCombined = false) {
-    let types = [];
+function generateAlgebraProblem(type = 'addition/subtraction', isCombined = false) {
     let numbers = [];
+    let expression;
+    let result;
+    let correctExpression;
+    let mathProblem;
 
-    if (isCombined) {
-        algebraAttributes.forEach(attr => {
-            if (attr === 'addition/subtraction') {
-                types.push(Math.random() < 0.5 ? 'addition' : 'subtraction');
-            } else if (attr === 'multiplication/division') {
-                types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
-            }
-        });
+    // Generate two random numbers
+    numbers.push(Math.floor(Math.random() * 10));
+    numbers.push(Math.floor(Math.random() * 10));
 
-        for (let i = 0; i <= types.length; i++) {
-            numbers.push(Math.floor(Math.random() * 10));
-        }
+    // Determine if it's addition or subtraction
+    let operator = Math.random() < 0.5 ? '+' : '-';
+
+    // Create the expression based on the type of operation
+    if (operator === '+') {
+        expression = `${numbers[0]} + ${numbers[1]}`;
+        result = numbers[0] + numbers[1];
     } else {
-        algebraAttributes.push(type); // Add the current algebra type to the selected attributes
-        numbers.push(Math.floor(Math.random() * 10));
-        numbers.push(Math.floor(Math.random() * 10));
-
-        if (!type || type === 'addition/subtraction') {
-            types.push(Math.random() < 0.5 ? 'addition' : 'subtraction');
-        } else if (type === 'multiplication/division') {
-            types.push(Math.random() < 0.5 ? 'multiplication' : 'division');
-        }
+        expression = `${numbers[0]} - ${numbers[1]}`;
+        result = numbers[0] - numbers[1];
     }
 
-    let expression = `${numbers[0]} ${getOperator(types[0])} ${numbers[1]}`;
-    let result = eval(expression);
-    
-    let mathProblem, correctExpression;
+    // Randomly choose the form of the question
     const problemType = Math.floor(Math.random() * 3);
-
     if (problemType === 0) {
         mathProblem = `x = ${expression}`;
         correctExpression = result;
@@ -136,13 +127,6 @@ function generateAlgebraProblem(type = null, isCombined = false) {
     document.getElementById('another-one-button').style.display = 'none';
 }
 
-function getOperator(type) {
-    if (type === 'addition') return '+';
-    if (type === 'subtraction') return '-';
-    if (type === 'multiplication') return '*';
-    if (type === 'division') return '/';
-}
-
 function beginAlgebraProblems() {
     algebraAttributes = []; // Reset the selected attributes
     if (document.getElementById('addition-subtraction').checked) {
@@ -152,9 +136,10 @@ function beginAlgebraProblems() {
         algebraAttributes.push('multiplication/division');
     }
     if (algebraAttributes.length > 0) {
-        generateAlgebraProblem(null, true);
+        generateAlgebraProblem('addition/subtraction', algebraAttributes.length > 1);
     }
 }
+
 
 function generateNumber(digits) {
     if (digits === 'one') {
